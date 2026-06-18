@@ -81,7 +81,7 @@ How it decides what to do:
 - A guild quest that's blocked waiting on you to donate more items, or to get a class for active skill quest counts as "no work available" for this purpose — the script keeps filling Battle Pass time instead of repeatedly retrying a donate it can't complete or being stuck.
 - It only fills the **hunt** progress. The Battle Pass **stamina** quest can't be advanced directly — it will complete as you spend more stamina.
 - Default hunt targets are **Lizardman Flamecaster** and **Lizardman Shadowclaw**. You can add, remove, or reset these in **Settings → Waves → Battle Pass hunt targets**.
-- The moment a guild quest has actionable work again, the script hands control back to it — Battle Pass filling is always interruptible, never blocking.
+- when guild quests has actionable work again, the script will hand control back to it — Battle Pass filling is interruptible, never blocking.
 - If you'd rather the script never touch the Battle Pass at all, enable **Skip Battle Pass** in **Settings → General**. Guild quests will keep running normally; Battle Pass toasts and automation simply stop. Toggling this on mid-hunt aborts cleanly back to guild quests (or idle) rather than leaving anything stuck mid-attack.
 
 You'll see this reflected as a "Battle Pass hunt" toast with progress (e.g. `3/8`) appearing and disappearing between your guild quest toasts — that's expected, it means the script is filling gaps rather than wasting time.
@@ -150,14 +150,12 @@ When nothing usable exists yet for a quest—no spawned monster, no death confir
   * *(With Prekills on)* Any other quest with monsters it can hit right now.  
   If any of those have usable targets, the script attacks through them in order before moving on.
 
-* **Battle Pass Is Sequential**  
-  BP only gets a turn after the guild pass comes up empty. If guild work is genuinely unavailable on that cycle, the script does one BP cycle, then goes back to waiting for the next recheck.
+* **Battle Pass Fills Gaps Continuously**  
+  BP only gets a turn after the guild pass comes up empty. If guild work is genuinely unavailable on that cycle, Instead of waiting for the 10-second wave timer, BP attacks run continuously until Battle Pass hunt until it is fully complete or monsters were found for guild quests.
 
 * **Current Batches Finish First**  
-  If the script is already processing a quest batch, it does not interrupt that batch for a new wave retry. For example, if we are currently attacking 7 eligible monsters, it will finish those 7 first. If monsters for another quest spawns during that time, it is not added to the active batch. It gets picked up on the next pass after the current batch ends.
+  If the script was already processing a quest batch, it would not interrupt that batch for a new wave retry. For example, if it was attacking 7 eligible monsters, it would finish those 7 first. If monsters for another quest spawned during that time, they would not added to the active batch; they would get picked up on the next pass after the current batch ended.
 
-* **"No runnable prekill targets"**  
-  This does not mean the quests are done. It usually means they are attacked and now waiting on death or loot confirmation—with nothing new to attack at that exact moment.   This allows BP to fill during these moments where its only waiting.
 ---
 ## Potions: automatic stamina / HP / mana use
 
