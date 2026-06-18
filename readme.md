@@ -43,7 +43,7 @@ That's it. The script runs on its own from here. Everything past this point is r
 **Get started:**
 
 
-
+https://github.com/user-attachments/assets/92d4366f-804a-4ec1-bba8-c48af4538c04
 
 * Reload the tabs to transfer the automation lock if needed.
 * The lock icon only appears on the specific tab holding the automation lock.
