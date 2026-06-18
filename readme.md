@@ -125,7 +125,7 @@ Only one tab acts as the **"worker"** for your account at a time—attacking, lo
 * **Automatic Handover:** Closing or reloading the active lock-holding tab hands the lock over to another open tab on the same account within a second or two. There is usually nothing you need to manage manually.
 * **Navigation** the tab lock system is mostly for when you want to use multiple tabs and remain clutter-free of the script while its doing its work. If you use a single tab, the tab lock doesnt really matter and you can do so if you want, but I would recommend setting one tab as a "main tab".
   
-  ---
+---
 
 ## Smart attacking (why it "probes" first)
 
