@@ -154,7 +154,7 @@ Three small UI elements sit together at the bottom-left of the screen:
 
 - **Status badge** — shows the current phase in plain words: e.g `IDLE`, `WAITING WAVE``ATTACKING` etc or hard stops — see troubleshooting. The dot pulses only on the tab actually doing the work.
 - **⏸ / ▶ button** — pauses or resumes all automation. While paused, nothing runs, including Battle Pass filling and watchers.
-- **🔒 button** — this is **not** the same as "which tab is doing the work." Only one tab at a time can hold the automation lock (handled automatically via the browser's lock API — whichever tab is open/active gets it, and it transfers to another open tab automatically on reload or navigation). The 🔒 button just adds a **"are you sure you want to leave?"** browser warning to that one tab, so you don't accidentally kill an in-progress run by reloading or closing it while doing something else in other tabs.  but single tab navigation is fine, the guard is to accidently having the lock transfer when you dont want it to. It's a guard rail, not the lock itself.
+- **🔒 button** — this is **not** the same as "which tab is doing the work." Only one tab at a time can hold the automation lock (handled automatically via the browser's lock API — whichever tab is open/active gets it, and it transfers to another open tab automatically on reload or navigation). The 🔒 button just adds a **"are you sure you want to leave?"** browser warning to that one tab, so you don't accidentally transfer the lock to another tab when you dont want it to. It's a guard rail, not the lock itself.
 
 If you have multiple tabs open, only the lock-holding tab actually attacks/loots — other tabs mirror toast notifications so you can still see progress without duplicating actions. You can turn this off in settings > notifications if you want.
 
@@ -168,7 +168,7 @@ If you have multiple tabs open, only the lock-holding tab actually attacks/loots
 - **Potions** — the auto-use toggle, the "pause on no stamina" behavior, and per-run caps for each potion type.
 - **Network** — HTTP retry counts/delays and cache lifetimes for things like wave scans, stamina reads, and Loot Finder's scan interval. Lower values mean more frequent server hits which could lead to issues as we get ratelimited
 - **Notifications** — mute individual toast categories (quest events, kill progress, waiting/background toasts, errors, guild-verification pings), control toast durations, and tune how many past session reports/events are kept.
-- **Waves** — turn built-in wave sources on/off, add extra wave URLs to scan, and manage the Battle Pass hunt target monster list described above. Most people never need to touch this — it's mainly there in case a new wave gets added to the game that the script doesn't know about yet, or one of the built-in ones stops being useful for your level range.
+- **Waves** — turn built-in wave sources on/off, add extra wave URLs to scan, and manage the Battle Pass hunt target monster list described above. Most people never need to touch this — it's mainly there in case targets are on a wave that the script doesn't know about yet, or one of the built-in ones stops being useful for your quests (so you can skip scans for it).
 
 Remember to save settings after you change them.
 
