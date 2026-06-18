@@ -6,6 +6,6 @@
 // @match        https://demonicscans.org/*
 // @grant        none
 // @author       Werewulf >w<
-// @downloadURL  https://raw.githubusercontent.com/WerewuIf/Adventure-Guild-Quest-Center/main/adventure-guild-quest-center.user.js
-// @updateURL    https://raw.githubusercontent.com/WerewuIf/Adventure-Guild-Quest-Center/main/adventure-guild-quest-center.meta.js
+// @downloadURL  https://raw.githubusercontent.com/WerewuIf/Adventure-Guild-Quest-Center/refs/heads/main/adventure-guild-quest-center.user.js
+// @updateURL    https://raw.githubusercontent.com/WerewuIf/Adventure-Guild-Quest-Center/refs/heads/main/adventure-guild-quest-center.meta.js
 // ==/UserScript==
