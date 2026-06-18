@@ -104,6 +104,28 @@ With it on, the script periodically scans graveyards across all wave sources for
 The loot finder can also help recover loot from a hard reset
 
 ---
+## Tab Lock: Multi-Tab Safety & Coordination
+
+Only one tab acts as the **"worker"** for your account at a time—attacking, looting, accepting, donating, and finishing quests all happen from a single tab. This mechanism is known as the **tab lock**, and it exists to prevent two open tabs from ever trying to attack the same monster or accept the same quest at once.
+
+#### How It's Acquired
+
+* **Automated Request:** Requested automatically on page load — no manual action is required to acquire it.
+* **Account-Scoped Isolation:** The lock is also scoped per account (per player ID), meaning two different accounts open in different tabs will never compete for the same lock.
+* **Silent Queueing:** If the lock is free, the tab grabs it instantly. If another tab already holds it, the new tab queues silently in the background and is automatically granted the lock the moment the holder releases it (e.g., when the holding tab is closed, reloaded, or navigated away).
+
+#### What the Lock Controls
+
+* **Core Actions:** Attacking, looting, and quest actions (`accept` / `donate` / `finish`) only ever execute on the lock-holding tab.
+* **🔒 "Main Tab" Button:** This button is only visible on the tab that currently holds the lock; it is hidden everywhere else. Clicking it does not affect the lock status directly—instead, it arms a browser-native *"Leave this page?"* confirmation dialog on that specific tab. This prevents you from accidentally reloading or navigating away and unintentionally handing the lock to another open tab. 
+* **Toast Notifications:** The lock-holding tab actively generates all notifications. Other open tabs mirror the persistent toasts, so you can watch progress from any window without those tabs executing tasks. You can restrict this behavior via `Settings` → `Notifications` → `Only notify on active tab or guild page`.
+
+### Practical Notes
+
+* **Automatic Handover:** Closing or reloading the active lock-holding tab hands the lock over to another open tab on the same account within a second or two. There is usually nothing you need to manage manually.
+* **Navigation** the tab lock system is mostly for when you want to use multiple tabs and remain clutter-free of the script while its doing its work. If you use a single tab, the tab lock doesnt really matter and you can do so if you want, but I would recommend setting one tab as a "main tab".
+  
+  ---
 
 ## Smart attacking (why it "probes" first)
 
