@@ -98,6 +98,7 @@ With it on, the script periodically scans graveyards across all wave sources for
 - If the quest is already active/accepted, the kill counts immediately and gets queued for looting right away.
 - If the quest is only available but not yet accepted, the kill is held as deferred — same as a Prekills deferred kill — and gets claimed automatically the moment you accept the quest.
 - It runs as its own, independent of whether Autokills is on.
+- Supports stacked monsters created by slayer's bot.
 -  Scan frequency is **Loot finder scan interval** in Settings → Network → Polling intervals. 
 
 The loot finder can also help recover loot from a hard reset
@@ -183,7 +184,7 @@ The **View records** button opens a history of automation runs: total attacks, d
 ## Special quest types
 
 - **Skill-usage quests** ("use N skills") run automatically by spamming support skill on a random mob, but requires you to have **picked a class** at `/classes.php`. If you haven't, the script skips the quest with a "Skills Missing — No Class" toast and will do prekills on other quests (then just pick a class) - pause script if you dont want this.
-- **Donation/collection quests** are recognized and automated for the donate/finish steps, but the script does **not** gather, craft, or buy items for you — you still need to physically have enough of the item. If you're short, you'll get a persistent "need more items" reminder instead of repeated failed attempts.
+- **Donation/collection quests** are recognized and automated for the donate/finish steps, but the script does **not** gather, craft, or buy items for you — you still need to physically have enough of the item. If you're short, it will do battle pass.
 
 ---
 
@@ -191,8 +192,8 @@ The **View records** button opens a history of automation runs: total attacks, d
 
 1. Make sure you're on the tab that's actually doing the work (the one with the pulsing status dot / lock icon).
 2. If the status badge says `STOPPED: ...`, that's a **hard stop**, not a crash — see the table below for what each one means. Hard stops clear themselves automatically after the recheck timer, or you can clear them immediately.
-3. **Settings → General → Export debug package**, and send the file to me in a DM. This is really useful for diagnosing issues + description of what happened.
-4. Hard Stops: Hit **⏸ to pause**, then go to **Settings → Combat → Clear hard stop**. This will clear any hard stops e.g no stamina timer that would of had retried in 60s.
+3. Hard Stops: Hit **⏸ to pause**, then go to **Settings → Combat → Clear hard stop**. This will clear any hard stops e.g no stamina timer that would of had retried in 60s.
+4. **Settings → General → Export debug package**, and send the file to me in a DM. This is really useful for diagnosing issues + description of what happened.
 5. As a last resort, **Settings → Combat → Full Reset** wipes all runtime state, kill queues, and pending loot. Please export a debug package *first* and send me a dm if you can — it's the only record of what went wrong.
 
 ### Hard stop reasons
