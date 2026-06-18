@@ -203,7 +203,7 @@ The **View records** button opens a history of automation runs: total attacks, d
 
 ## Special quest types
 
-- **Skill-usage quests** ("use N skills") run automatically by spamming support skill on a random mob, but requires you to have **picked a class** at `/classes.php`. If you haven't, the script skips the quest with a "Skills Missing — No Class" toast and will do prekills on other quests (then just pick a class) - pause script if you dont want this.
+- **Skill-usage quests** ("use N skills") run automatically by spamming support skill on a random mob, but requires you to have **picked a class** at `/classes.php`. If you haven't, the script will just do bp until you pick a class. 
 - **Donation/collection quests** are recognized and automated for the donate/finish steps, but the script does **not** gather, craft, or buy items for you — you still need to physically have enough of the item. If you're short, it will do battle pass.
 
 ---
