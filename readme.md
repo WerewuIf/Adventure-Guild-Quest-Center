@@ -91,7 +91,7 @@ If all adventure quests are completed, bp runs normally.
 ---
 ## Loot Finder: Kills That The Script Didn't Make Itself
 
-Normally the script only credits a kill toward a quest if it personally attacked that monster. **Loot Finder** (Settings → General) closes a specific gap: monsters you've already damaged past a quest's minimum requirement through some other means — manual attacks, slayers bot — that are sitting and un-looted in a wave's graveyard.
+Normally the script only credits a kill toward a quest if it itself attacked that monster. **Loot Finder** (Settings → General) closes a specific gap: monsters you've already damaged past a quest's minimum requirement through some other means — manual attacks, slayers bot — that are sitting and un-looted in a wave's graveyard.
 
 With it on, the script periodically scans graveyards across all wave sources for any dead monster matching an enabled kill quest's target name where your damage already clears that quest's minimum. When it finds one, it's credited and looted exactly as if the script had attacked and killed it directly.
 
@@ -128,7 +128,7 @@ When nothing usable exists yet for a quest—no spawned monster, no death confir
   If any of those have usable targets, the script attacks through them in order before moving on.
 
 * **Battle Pass Is Sequential**  
-  BP only gets a turn after the guild pass comes up empty. If guild work is genuinely unavailable on that cycle, the script does one BP hunt attack, then goes back to waiting for the next recheck.
+  BP only gets a turn after the guild pass comes up empty. If guild work is genuinely unavailable on that cycle, the script does one BP cycle, then goes back to waiting for the next recheck.
 
 * **Current Batches Finish First**  
   If the script is already processing a quest batch, it does not interrupt that batch for a new wave retry. For example, if we are currently attacking 7 eligible monsters, it will finish those 7 first. If monsters for another quest spawns during that time, it is not added to the active batch. It gets picked up on the next pass after the current batch ends.
@@ -191,7 +191,7 @@ The **View records** button opens a history of automation runs: total attacks, d
 
 1. Make sure you're on the tab that's actually doing the work (the one with the pulsing status dot / lock icon).
 2. If the status badge says `STOPPED: ...`, that's a **hard stop**, not a crash — see the table below for what each one means. Hard stops clear themselves automatically after the recheck timer, or you can clear them immediately.
-3. **Settings → General → Export debug package**, and send the file to me in a DM. This is far more useful for diagnosing issues than a description of what happened.
+3. **Settings → General → Export debug package**, and send the file to me in a DM. This is really useful for diagnosing issues + description of what happened.
 4. Hard Stops: Hit **⏸ to pause**, then go to **Settings → Combat → Clear hard stop**. This will clear any hard stops e.g no stamina timer that would of had retried in 60s.
 5. As a last resort, **Settings → Combat → Full Reset** wipes all runtime state, kill queues, and pending loot. Please export a debug package *first* and send me a dm if you can — it's the only record of what went wrong.
 
@@ -199,7 +199,7 @@ The **View records** button opens a history of automation runs: total attacks, d
 
 | Badge says... | What happened | What to do |
 |---|---|---|
-| `STOPPED: no-stamina` | Ran out of stamina (or scrpt predicted you odnt have enough stamina to deal enough damage anymore), and potions are off (or you've hit your potion cap) | Wait for stamina to regen naturally, or check the cap in Settings → Potions |
+| `STOPPED: no-stamina` | Ran out of stamina (or script predicted you don't have enough stamina to deal enough damage anymore), and potions are off (or you've hit your potion cap) | Wait for stamina to regen naturally, or check the cap in Settings → Potions |
 | `STOPPED: no-hp-potion` | Hit 0 HP with no Full HP Potions left | Get more, or wait it out — it'll auto-retry every 60s |
 | `STOPPED: no-mana` | A skill-usage quest needs mana and you're out of Mana Potions (S) | Same idea — restock or wait for the retry |
 | `STOPPED: auto-farm-on` | The game's built-in Auto Farm is turned on | Turn Auto Farm off — it and this script can't run at the same time |
