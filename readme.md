@@ -20,7 +20,7 @@ This guide covers setup, the main toggles, and the less obvious behavior (like B
 
 1. Install Tampermonkey.
 2. Open Tampermonkey → click the **+** to create a new script.
-3. Paste the entire script and save.
+3. Paste the entire [script](https://github.com/WerewuIf/Adventure-Guild-Quest-Center/blob/main/adventure-guild-quest-center.user.js) and save. 
 4. The script is now active on the site. You don't need to do anything else for it to load.
 
 You can also use the import function in **Settings**, once the script is running, instead of repeating this process per browser/profile.
