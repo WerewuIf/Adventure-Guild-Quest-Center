@@ -25,6 +25,8 @@ This guide covers setup, the main toggles, and the less obvious behavior (like B
 
 You can also use the import function in **Settings**, once the script is running, instead of repeating this process per browser/profile.
 
+You can regularly update the script through tampermonkey. (File > Check for updates)
+
 ---
 
 ## Setup (do this once)
