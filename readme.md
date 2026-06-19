@@ -100,7 +100,7 @@ With it on, the script periodically scans graveyards across all wave sources for
 - It runs as its own, independent of whether Autokills is on.
 - Supports stacked monsters created by slayer's bot.
 -  Scan frequency is **Loot finder scan interval** in Settings → Network → Polling intervals.
--  Overshoot for stacks found exists so a quest requiring 10 kills wont loot a 250 stack. Overshoot multiplier can be changed in Network Settings.
+-  Overshoot for stacks found exists so a quest requiring 10 kills wont loot a 250 stack. Overshoot multiplier can be changed in Network Settings. The found loot will also loot singles before stacks.
 
 The loot finder can also help recover loot from a hard reset
 
