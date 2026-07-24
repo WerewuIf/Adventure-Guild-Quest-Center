@@ -36,8 +36,9 @@ You can regularly update the script through tampermonkey. (File > Check for upda
 3. **Click "Add selected"** in the toolbar that appears under the page header. This is the step that actually saves the quest into autocomplete — ticking the checkbox alone only marks it as *queued*, it doesn't run yet.
 4. **Turn on Autokills** (toggle in the same toolbar, or in Settings → General). This is the master switch — without it, the script will still accept/donate/finish quests for you, but it will never attack anything.
 5. **Turn on Prekills** (optional, recommended). Lets the script work on several kill quests at once instead of strictly one at a time. See the dedicated section below for what this actually changes.
-6. **(Recommended) Click the 🔒 button** next to the status pill at the bottom of the screen. This only appears on the tab currently doing the real work. See "The lock system" below for what it actually does — it's not the same thing as the automation lock itself.
-7. Unpause script if necessary.
+6. Configure autofarm in settings (recommended)
+7. Click the 🔒 button next to the status pill at the bottom of the screen. This only appears on the tab currently doing the real work. See "The lock system" below for what it actually does — it's not the same thing as the automation lock itself.
+8. Unpause script if necessary.
    
 That's it. The script runs on its own from here. Everything past this point is reference material for understanding *what* it's doing and why.
 
@@ -49,7 +50,7 @@ https://github.com/user-attachments/assets/92d4366f-804a-4ec1-bba8-c48af4538c04
 
 * Reload the tabs to transfer the automation lock if needed.
 * The lock icon only appears on the specific tab holding the automation lock.
-* Clicking the lock icon triggers a warning beofre page reloads to prevent accidental navigation and lock loss (not visible in the video for some reason).
+* Clicking the lock icon triggers a warning before page reloads to prevent accidental navigation and lock loss (not visible in the video for some reason).
 * The video also contains locations of the debug export and reset buttons.
   
 
@@ -100,13 +101,20 @@ With it on, the script periodically scans graveyards across all wave sources for
 - If the quest is already active/accepted, the kill counts immediately and gets queued for looting right away.
 - If the quest is only available but not yet accepted, the kill is held as deferred — same as a Prekills deferred kill — and gets claimed automatically the moment you accept the quest.
 - It runs as its own, independent of whether Autokills is on.
-- Supports stacked monsters created by slayer's bot.
--  Scan frequency is **Loot finder scan interval** in Settings → Network → Polling intervals.
--  Overshoot for stacks found exists so a quest requiring 10 kills wont loot a 250 stack. Overshoot multiplier can be changed in Network Settings. The found loot will also loot singles before stacks.
+-  **Supports stacked monsters created by slayer's bot.**
+-  Overshoot for stacks found exists (1.5x) so a quest requiring 10 kills wont loot a 250 stack, but will loot a 15 stack.
+-  willloot singles before stacks.
 
 The loot finder can also help recover loot from a hard reset
 
 ---
+## Autofarm
+
+It will queue up all of the quests you have including battle pass (unless you opt out), put them into slayer's bot for the correct damage and counts, then loot them and finish. 
+Process is extremely quick > sometimes takes up only 20 seconds to finihs all your quests.
+
+---
+
 ## Tab Lock: Multi-Tab Safety & Coordination
 
 Only one tab acts as the **"worker"** for your account at a time—attacking, looting, accepting, donating, and finishing quests all happen from a single tab. This mechanism is known as the **tab lock**, and it exists to prevent two open tabs from ever trying to attack the same monster or accept the same quest at once.
