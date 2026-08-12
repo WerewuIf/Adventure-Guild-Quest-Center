@@ -1,7 +1,7 @@
 // ==UserScript==
 // @name         Adventure Guild Quest Center
 // @namespace    http://demonicscans.org/
-// @version      1.3.7
+// @version      1.3.8
 // @description  One of the most comprehensive addons for adventure guild. AHAB only.
 // @match        https://demonicscans.org/*
 // @grant        none
