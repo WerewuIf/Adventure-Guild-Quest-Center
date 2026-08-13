@@ -1,246 +1,371 @@
-# Adventure Guild Quest Center — Setup & User Guide
+# Adventure Guild Quest Center
 
-## What it does
+> Automates your Adventurer's Guild quests end to end: accepting quests, fighting, looting, donating, and finishing them while you do other things. It also supports Battle Pass hunts and the game's Auto Farm.
 
-Automates your Adventurer's Guild quests end to end: accepting quests, fighting the monsters, looting the kills, donating items, and finishing quests — all while you do work on other pages. It also does your Battle Pass hunt quest.
+This guide covers setup, the important options, and the less obvious behavior that is useful to know while it runs.
 
-This guide covers setup, the main toggles, and the less obvious behavior (like Battle Pass filling) that isn't visible just from clicking around the UI.
+---
+
+## Features
+
+* Automatic accept → combat → loot/donate → finish
+* **Autokills** for normal kill quests
+* **Prekills** for multiple kill quests concurrently
+* **Loot Finder** for qualifying kills made elsewhere
+* **Battle Pass** hunt automation and gap filling
+* **Auto Farm** integration, including capture/restore
 
 ---
 
 ## Requirements
 
-- You must be in **[AHAB] Casual Ahab** with the **[AHAB]** tag in your display name. The script checks this on load and will block automation if you aren't verified.
-- You can change your name by going to any manga page's comment section.
-- Install **[Tampermonkey](https://www.tampermonkey.net/)** for your browser.
+* [Tampermonkey](https://www.tampermonkey.net/)
+* **[AHAB] Casual Ahab** with the **[AHAB]** tag in your display name
+
+The script checks guild authorization on load and will block automation if the account is not verified.
 
 ---
 
 ## Installation
 
 1. Install Tampermonkey.
-2. Open Tampermonkey → click the **+** to create a new script.
-3. Paste the entire [script](https://github.com/WerewuIf/Adventure-Guild-Quest-Center/blob/main/adventure-guild-quest-center.user.js) and save. 
-4. The script is now active on the site. You don't need to do anything else for it to load.
+2. Create a new userscript.
+3. Paste the entire script and save.
+4. Open/reload Demonicscans.
 
-You can also use the import function in **Settings**, once the script is running, instead of repeating this process per browser/profile.
-
-You can regularly update the script through tampermonkey. (File > Check for updates)
+The controls are added to the **Adventurer's Guild** page.
 
 ---
 
-## Setup (do this once)
+## Getting started
 
-1. **Go to the Adventurer's Guild page.**
-2. **Select your quests.** Each quest row now has a small checkbox on the left. Tick every quest you want automated.
-3. **Click "Add selected"** in the toolbar that appears under the page header. This is the step that actually saves the quest into autocomplete — ticking the checkbox alone only marks it as *queued*, it doesn't run yet.
-4. **Turn on Autokills** (toggle in the same toolbar, or in Settings → General). This is the master switch — without it, the script will still accept/donate/finish quests for you, but it will never attack anything.
-5. **Turn on Prekills** (optional, recommended). Lets the script work on several kill quests at once instead of strictly one at a time. See the dedicated section below for what this actually changes.
-6. Configure autofarm in settings (recommended)
-7. Click the 🔒 button next to the status pill at the bottom of the screen. This only appears on the tab currently doing the real work. See "The lock system" below for what it actually does — it's not the same thing as the automation lock itself.
-8. Unpause script if necessary.
-   
-That's it. The script runs on its own from here. Everything past this point is reference material for understanding *what* it's doing and why.
-
----
-**Get started:**
+1. Open the **Adventurer's Guild**.
+2. Select the quests you want automated.
+3. Click **Add selected**.
+4. Turn on **Autokills** if you want automatic combat.
+5. Turn on **Prekills** if you want multiple kill quests worked on together.
+6. Choose **Manual** or **Autofarm** combat mode.
+7. Turn on **Potions** if you want automatic potion use.
+8. Unpause the script if needed.
 
 
-https://github.com/user-attachments/assets/92d4366f-804a-4ec1-bba8-c48af4538c04
+## Autokills
 
-* Reload the tabs to transfer the automation lock if needed.
-* The lock icon only appears on the specific tab holding the automation lock.
-* Clicking the lock icon triggers a warning before page reloads to prevent accidental navigation and lock loss (not visible in the video for some reason).
-* The video also contains locations of the debug export and reset buttons.
-  
+Autokills is the main combat switch.
 
-A explanation for some features can be found below.
+When enabled, the script finds valid monsters, joins, attacks, waits for death/loot, and continues until the quest is complete.
+
+Without Autokills, quest actions such as accept, donate, and finish can still run, but the script will not perform normal monster combat.
+
+**Prekills requires Autokills.**
 
 ---
 
-## Prekills: running multiple quests at once
+## Prekills
 
-By default (Prekills off), the script finishes one kill quest completely — including waiting for every kill to be confirmed dead and looted — before starting the next which is **very slow**. 
+Prekills lets the script work on multiple kill quests at the same time instead of finishing one before starting another.
 
-With **Prekills on**, the script instead:
+The main advantage is less downtime while one quest is waiting on waves, deaths, or loot.
 
-- Attacks targets for *every* eligible quest, not just the active one, as soon as a wave has usable monsters for them.
-- Defers looting on quests you haven't accepted yet — kills are tracked and held, then claimed the moment quest gets accepted.
-- Lets quests progress in parallel instead of sitting idle while one quest waits for a wave to respawn or a kill to confirm dead.
+Kills can also be tracked before their quest is accepted. When that quest becomes active, the deferred loot can be claimed.
 
-This is just pure optimization. It requires **Autokills** to be on, and turning Autokills off will also turn Prekills off automatically.
+For several kill quests, **Prekills is the recommended setting**.
 
 ---
 
-## Battle Pass auto-fill ("BP fill")
+## Smart attacking
 
-This is the one feature that isn't visible anywhere in the UI flow, so it's worth explaining explicitly.
+The first hits on a new monster type may be cheap probe attacks. The script uses them to estimate damage per stamina and pick a better attack for the quest's minimum damage requirement.
 
-Guild quests spend a lot of time *waiting* — for a new monster wave to spawn, for a kill to be confirmed dead, for loot to register. Rather than sit idle during those gaps, the script checks whether your Battle Pass **hunt** quest still needs kills, and if so, spends the dead time attacking Battle Pass hunt targets instead.
-
-How it decides what to do:
-
-- If a guild quest has work available, the script always does that first — Battle Pass filling only happens when guild-side work is genuinely unavailable right now (e.g checking for monsters).
-- A guild quest that's blocked waiting on you to donate more items, or to get a class for active skill quest counts as "no work available" for this purpose — the script keeps filling Battle Pass time instead of repeatedly retrying a donate it can't complete or being stuck.
-- It only fills the **hunt** progress. The Battle Pass **stamina** quest can't be advanced directly — it will complete as you spend more stamina.
-- Default hunt targets are **Lizardman Flamecaster** and **Lizardman Shadowclaw**. You can add, remove, or reset these in **Settings → Waves → Battle Pass hunt targets**.
-- when guild quests has actionable work again, the script will hand control back to it — Battle Pass filling is interruptible, never blocking.
-- If you'd rather the script never touch the Battle Pass at all, enable **Skip Battle Pass** in **Settings → General**. Guild quests will keep running normally; Battle Pass toasts and automation simply stop. Toggling this on mid-hunt aborts cleanly back to guild quests (or idle) rather than leaving anything stuck mid-attack.
-
-You'll see this reflected as a "Battle Pass hunt" toast with progress (e.g. `3/8`) appearing and disappearing between your guild quest toasts — that's expected, it means the script is filling gaps rather than wasting time.
-
-If all adventure quests are completed, bp runs normally.
+The estimate expires after the configured damage-model lifetime, so it can be recalculated later if your damage changes.
 
 ---
-## Loot Finder: Kills That The Script Didn't Make Itself
 
-Normally the script only credits a kill toward a quest if it itself attacked that monster. **Loot Finder** (Settings → General) closes a specific gap: monsters you've already damaged past a quest's minimum requirement through some other means — manual attacks, slayers bot — that are sitting and un-looted in a wave's graveyard.
+## Wave sources
 
-With it on, the script periodically scans graveyards across all wave sources for any dead monster matching an enabled kill quest's target name where your damage already clears that quest's minimum. When it finds one, it's credited and looted exactly as if the script had attacked and killed it directly.
+The built-in wave sources are currently:
 
-- If the quest is already active/accepted, the kill counts immediately and gets queued for looting right away.
-- If the quest is only available but not yet accepted, the kill is held as deferred — same as a Prekills deferred kill — and gets claimed automatically the moment you accept the quest.
-- It runs as its own, independent of whether Autokills is on.
--  **Supports stacked monsters created by slayer's bot.**
--  Overshoot for stacks found exists (1.5x) so a quest requiring 10 kills wont loot a 250 stack, but will loot a 15 stack.
--  willloot singles before stacks.
+* Gate 3 / Wave 3
+* Gate 3 / Wave 5
+* Gate 3 / Wave 8
+* Gate 5 / Wave 9
 
-The loot finder can also help recover loot from a hard reset
+Go to **Settings → Waves & Potions → Wave Sources** to add custom sources or disable built-in ones.
+
+Custom sources are mainly useful when a quest monster is on a wave the default list does not include.
+
+The script also normalizes monster names when matching targets, so small naming differences generally do not break detection.
 
 ---
+
+## Battle Pass
+
+The script supports the **Battle Pass Hunt** separately from guild quests.
+
+**Default hunt targets**
+
+* **Lizardman Flamecaster**
+* **Lizardman Shadowclaw**
+
+Change them under **Settings → Waves & Potions → Battle Pass Targets**.
+
+**Gap filling**
+
+In Manual mode, Battle Pass hunt work can fill periods where guild automation has nothing useful to do.
+
+The priority is always:
+
+**Guild work first → Battle Pass only when guild work is unavailable.**
+
+As soon as guild work becomes available again, it gets priority.
+
+**Skip Battle Pass**
+
+**Settings → General → Skip Battle Pass**
+
+Enable this if you do not want the script to touch Battle Pass automation.
+
+Battle Pass stamina progress is reported, but is not directly farmed by the script.
+
+---
+
 ## Autofarm
 
-It will queue up all of the quests you have including battle pass (unless you opt out), put them into slayer's bot for the correct damage and counts, then loot them and finish. 
-Process is extremely quick > sometimes takes up only 20 seconds to finihs all your quests.
+Combat Mode has two choices:
+
+* **Manual**
+* **Autofarm**
+
+Autofarm mode sends the current quest workload to the game's Auto Farm system instead of having the script perform the attacks itself.
+
+It can configure the target monster, minimum damage, stack limit, total kills, and related Auto Farm settings, then monitor the live Auto Farm state.
+
+**Multiple quests**
+
+The current Auto Farm system **merges targets**.
+
+Starting another quest does not automatically remove a target that is already being farmed by the script. Multiple quest targets can be in the same Auto Farm batch.
+
+**Battle Pass**
+
+Use Auto Farm for Battle Pass hunts toocontrols whether the Battle Pass Hunt is added to those batches.
+
+**Capture / restore**
+
+The Autofarm panel has:
+
+* **Capture current config**
+* **Restore captured config**
+* **Clear captured config**
+
+With **Auto-capture & restore** enabled, the script saves your current Auto Farm setup before taking it over and restores it after its automation work is finished.
+
+
+**Potion synchronization**
+
+Auto Farm can will get overwritten by these settings, and restored once over.
 
 ---
 
-## Tab Lock: Multi-Tab Safety & Coordination
+## Loot Finder
 
-Only one tab acts as the **"worker"** for your account at a time—attacking, looting, accepting, donating, and finishing quests all happen from a single tab. This mechanism is known as the **tab lock**, and it exists to prevent two open tabs from ever trying to attack the same monster or accept the same quest at once.
+Loot Finder is independent of Autokills.
 
-#### How It's Acquired
+It looks for dead monsters that match an enabled kill quest, already have enough of your damage to satisfy its minimum-damage requirement, and still have loot available.
 
-* **Automated Request:** Requested automatically on page load — no manual action is required to acquire it.
-* **Account-Scoped Isolation:** The lock is also scoped per account (per player ID), meaning two different accounts open in different tabs will never compete for the same lock.
-* **Silent Queueing:** If the lock is free, the tab grabs it instantly. If another tab already holds it, the new tab queues silently in the background and is automatically granted the lock the moment the holder releases it (e.g., when the holding tab is closed, reloaded, or navigated away).
+This is useful for kills made by something else, such as manual attacks or another bot.
 
-#### What the Lock Controls
+It can:
 
-* **Core Actions:** Attacking, looting, and quest actions (`accept` / `donate` / `finish`) only ever execute on the lock-holding tab.
-* **🔒 "Main Tab" Button:** This button is only visible on the tab that currently holds the lock; it is hidden everywhere else. Clicking it does not affect the lock status directly—instead, it arms a browser-native *"Leave this page?"* confirmation dialog on that specific tab. This prevents you from accidentally reloading or navigating away and unintentionally handing the lock to another open tab. 
-* **Toast Notifications:** The lock-holding tab actively generates all notifications. Other open tabs mirror the persistent toasts, so you can watch progress from any window without those tabs executing tasks. You can restrict this behavior via `Settings` → `Notifications` → `Only notify on active tab or guild page`.
+* credit and loot active quests,
+* defer kills for quests that are not accepted yet,
+* and process stacked monsters.
 
-### Practical Notes
-
-* **Automatic Handover:** Closing or reloading the active lock-holding tab hands the lock over to another open tab on the same account within a second or two. There is usually nothing you need to manage manually.
-* **Navigation** the tab lock system is mostly for when you want to use multiple tabs and remain clutter-free of the script while its doing its work. If you use a single tab, the tab lock doesnt really matter and you can do so if you want, but I would recommend setting one tab as a "main tab".
-  
----
-
-## Smart attacking (why it "probes" first)
-
-You'll notice the first couple of hits on a new monster type are weak Slash attacks. That's intentional — the script doesn't know your damage-per-stamina against that specific monster yet, so it throws a few cheap probe hits to measure it, then immediately switches to whichever skill clears the quest's minimum damage in the fewest stamina points. This avoids wasting stamina on overkill with a big skill and crits.
-
-This calibration is *per monster type* and gets re-checked every few minutes (crits, gear, etc. can shift it), so don't be alarmed if you see a probe hit or two again later on a monster you've already fought.
-
----
-## The Recheck Cycle: What Actually Happens While You're Waiting
-
-When nothing usable exists yet for a quest—no spawned monster, no death confirmed, no loot ready—the script does not sit idle for the whole wait. It rechecks on a fixed timer (**Wave poll delay** in `Settings → Combat`, **10 seconds** by default), and the "waiting" toast you see counts down to that before rechecking. 
-
-### Key Details About the Recheck Cycle
-
-* **One Shared Timer**  
-  It is one shared timer, not one per quest. If several quests are all waiting on a wave at once, you will see a single combined countdown. When it hits zero, the script runs one full decision pass.
-
-* **Guild Quests Take Priority**  
-  Every recheck tries guild quests first, before it even looks at Battle Pass (BP). That includes:
-  * The quest that originally triggered the wait.
-  * Anything else sitting in the same "waiting on a wave" state.
-  * *(With Prekills on)* Any other quest with monsters it can hit right now.  
-  If any of those have usable targets, the script attacks through them in order before moving on.
-
-* **Battle Pass Fills Gaps Continuously**  
-  BP only gets a turn after the guild pass comes up empty. If guild work is genuinely unavailable on that cycle, Instead of waiting for the 10-second wave timer, BP attacks run continuously until Battle Pass hunt until it is fully complete or monsters were found for guild quests.
-
-* **Current Batches Finish First**  
-  If the script was already processing a quest batch, it would not interrupt that batch for a new wave retry. For example, if it was attacking 7 eligible monsters, it would finish those 7 first. If monsters for another quest spawned during that time, they would not added to the active batch; they would get picked up on the next pass after the current batch ended.
-
----
-## Potions: automatic stamina / HP / mana use
-
-If **Use potions automatically** is on (Settings → Potions, or the toolbar checkbox), the script will:
-
-- Use **small stamina potions** to top up before an attack if you don't have enough stamina for the hit it wants to land.
-- Use a **full HP potion** if your HP hits 0 and you still have quests.
-- Use **mana potions (S)** to keep skill-usage quests going if you're short on mana for the chosen skill.
-
-Each potion type has a **per-run cap** in Settings → Potions (`-1` = unlimited, `0` = disabled entirely, any positive number = a hard limit for that run). Counts reset whenever a new report/run starts, and you can zero them early with **"Reset all counters now"** without touching the caps themselves, or creating a new snapshot. If a cap is hit and you genuinely run out, the script hard-stops with a "no stamina"/"no HP potion"/"no mana" message rather than silently failing.
+Singles are preferred before stacks, with an overshoot limit (1.5x) to avoid consuming an unnecessarily large stack for a small quest.
 
 ---
 
-## The status bar: badge, pause, and the lock system
+## Quest types
 
-Three small UI elements sit together at the bottom-left of the screen:
+**Kill quests**
 
-- **Status badge** — shows the current phase in plain words: e.g `IDLE`, `WAITING WAVE``ATTACKING` etc or hard stops — see troubleshooting. The dot pulses only on the tab actually doing the work.
-- **⏸ / ▶ button** — pauses or resumes all automation. While paused, nothing runs, including Battle Pass filling and watchers.
-- **🔒 button** — this is **not** the same as "which tab is doing the work." Only one tab at a time can hold the automation lock (handled automatically via the browser's lock API — whichever tab is open/active gets it, and it transfers to another open tab automatically on reload or navigation). The 🔒 button just adds a **"are you sure you want to leave?"** browser warning to that one tab, so you don't accidentally transfer the lock to another tab when you dont want it to. It's a guard rail, not the lock itself.
+Handled automatically when Autokills is enabled.
 
-If you have multiple tabs open, only the lock-holding tab actually attacks/loots — other tabs mirror toast notifications so you can still see progress without duplicating actions. You can turn this off in settings > notifications if you want.
+**Collection / donation quests**
 
----
+The script can handle the donate/finish part, but you still need to have the required items.
 
-## Settings reference (by tab)
+**Skill-usage quests**
 
-- **General** — theme switcher (Default / Void / Heavenly), the three master automation toggles (Autokills, Prekills, Skip Battle Pass, Loot Finder), display options (status badge, pause/lock buttons, tab-active pulse), where the status bar sits on screen, and the debug export button.
-- **Quests** — cooldowns between repeated accept/donate/finish attempts, and the "promotion detection" tuning that decides how confident the script needs to be before wiping progress when your quest board fully changes (raise these if it ever resets your progress incorrectly during normal play).
-- **Combat** — attack pacing, retry/backoff timing, the damage-calibration internals (how it learns your damage-per-stamina per monster), and manual recovery controls: **Clear hard stop** and **Full Reset**.
-- **Potions** — the auto-use toggle, the "pause on no stamina" behavior, and per-run caps for each potion type.
-- **Network** — HTTP retry counts/delays and cache lifetimes for things like wave scans, stamina reads, and Loot Finder's scan interval. Lower values mean more frequent server hits which could lead to issues as we get ratelimited
-- **Notifications** — mute individual toast categories (quest events, kill progress, waiting/background toasts, errors, guild-verification pings), control toast durations, and tune how many past session reports/events are kept.
-- **Waves** — turn built-in wave sources on/off, add extra wave URLs to scan, and manage the Battle Pass hunt target monster list described above. Most people never need to touch this — it's mainly there in case targets are on a wave that the script doesn't know about yet, or one of the built-in ones stops being useful for your quests (so you can skip scans for it).
+Quests such as **Use N skills** are supported.
 
-Remember to save settings after you change them.
+The script checks your class, uses the mapped class skill, finds a target, handles the required mana, and tracks the skill uses.
+
+You must have a class selected at `/classes.php`.
+
+Current class mappings include Warrior, Mage, Hunter, and Cleric.
 
 ---
 
-## Records (session reports)
+## Potions
 
-The **View records** button opens a history of automation runs: total attacks, damage, kills, quests finished, loot claimed, and a full timeline of events you can filter by type or by quest. The current run is always "active" until it finishes or you manually snapshot it — **⚡ Snapshot** archives the current progress and starts a fresh report without interrupting automation. Old reports can be deleted individually.
+The toolbar **Potions** toggle enables automatic potion use.
+
+Supported:
+
+* **Small Stamina Potion**
+* **Full HP Potion**
+* **Mana Potion S**
+
+Stamina potions can be used when an attack needs more stamina than you have. HP potions can recover you after reaching 0 HP. Mana Potion S can keep skill-usage quests moving.
+
+**Per-run limits**
+
+* `-1` = unlimited
+* `0` = disabled
+* positive number = maximum for that run
+
+**Reset all counters now** only resets the used counters; it does not change the configured limits.
 
 ---
 
-## Special quest types
+## Waiting / rechecks
 
-- **Skill-usage quests** ("use N skills") run automatically by spamming support skill on a random mob, but requires you to have **picked a class** at `/classes.php`. If you haven't, the script will just do bp until you pick a class. 
-- **Donation/collection quests** are recognized and automated for the donate/finish steps, but the script does **not** gather items for you — you still need to have enough of the item. If you're short, it will do battle pass.
+When the script is waiting for a wave, death confirmation, loot, or another temporary condition, it uses retry/recheck timers rather than repeatedly hammering the same action.
+
+The relevant timing controls are under **Settings → Combat**.
+
+When several quests are waiting, they are handled through the same automation scheduler.
 
 ---
 
-## If something goes wrong
+## Multi-tab behavior
 
-1. Make sure you're on the tab that's actually doing the work (the one with the pulsing status dot / lock icon).
-2. If the status badge says `STOPPED: ...`, that's a **hard stop**, not a crash — see the table below for what each one means. Hard stops clear themselves automatically after the recheck timer, or you can clear them immediately.
-3. Hard Stops: Hit **⏸ to pause**, then go to **Settings → Combat → Clear hard stop**. This will clear any hard stops e.g no stamina timer that would of had retried in 60s.
-4. **Settings → General → Export debug package**, and send the file to me in a DM. This is really useful for diagnosing issues + description of what happened.
-5. As a last resort, **Settings → Combat → Full Reset** wipes all runtime state, kill queues, and pending loot. Please export a debug package *first* and send me a dm if you can — it's the only record of what went wrong.
+Only one tab for an account performs the actual automation actions:
 
-### Hard stop reasons
+* attacks
+* loot
+* accept
+* donate
+* finish
 
-| Badge says... | What happened | What to do |
-|---|---|---|
-| `STOPPED: no-stamina` | Ran out of stamina (or script predicted you don't have enough stamina to deal enough damage anymore), and potions are off (or you've hit your potion cap) | Wait for stamina to regen naturally, or check the cap in Settings → Potions |
-| `STOPPED: no-hp-potion` | Hit 0 HP with no Full HP Potions left | Get more, or wait it out — it'll auto-retry every 60s |
-| `STOPPED: no-mana` | A skill-usage quest needs mana and you're out of Mana Potions (S) | Same idea — restock or wait for the retry |
-| `STOPPED: auto-farm-on` | The game's built-in Auto Farm is turned on | Turn Auto Farm off — it and this script can't run at the same time |
+Other tabs can remain open and mirror notifications without performing duplicate actions.
 
-You usually don't need to manually clear anything for these — they retry on their own once the underlying issue is gone. Manual clearing is mainly for when you've fixed the cause and don't want to wait out the timer.
+The automation lease is account-scoped, and another eligible tab can take over when the current worker reloads, closes, or navigates away.
+
+**The lock button**
+
+The **🔒** button is a navigation guard for the current worker tab.
+
+It is **not** a manual worker selector. The automation lease itself is handled automatically.
+
+**Notifications**
+
+Other tabs can mirror the worker's persistent toasts.
+
+You can restrict this under **Settings → Notifications → Lock Notifications to Guild + Active tab**.
+
+---
+
+## Status bar
+
+The bottom-left status area shows the current automation state and provides pause/control buttons.
+
+Typical states include:
+
+`IDLE` · `ATTACKING` · `LOOTING` · `WAITING WAVE` · `WAITING DEATH` · `AUTOFARM RUNNING ` · `PAUSED`
+
+The worker tab is indicated by the status pulse.
+
+---
+
+## Settings
+
+The available settings are grouped into the following areas:
+
+| Settings area       | What it controls                                                                                                                                                                        |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| **General**         | Themes, Autokills, Prekills, Skip Battle Pass, Loot Finder, status controls, and debug export. Themes: **Default**, **Void**, **Heavenly**.                                             |
+| **Quests**          | Quest action timing and quest-board change detection.                                                                                                                                   |
+| **Combat**          | Attack timing, probe hits, target delay, death/loot polling, damage-model lifetime, wave polling, retries, and recovery controls. Also contains **Clear hard stop** and **Full Reset**. |
+| **Waves & Potions** | Wave sources, Battle Pass targets, potion settings/caps, and Autofarm controls when Autofarm mode is selected.                                                                          |
+| **Notifications**   | Toast filters, duration, and active-tab notification behavior. ---                                                                                                                      |
+
+## Records
+
+**View records** opens the current session report and past archived reports.
+
+Reports track useful totals and events such as attacks, damage, loot, donations, completions, potion use, errors, and Battle Pass activity.
+
+Use the report when checking what the automation actually did rather than relying on the last toast on screen.
+
+---
+
+## Hard stops / recovery
+
+Hard stops are safety states that prevent the same failed action from being retried indefinitely.
+
+| Hard stop               | Meaning                                                                             |
+| ----------------------- | ----------------------------------------------------------------------------------- |
+| `STOPPED: no-stamina`   | Not enough stamina for the intended action and it could not currently be recovered. |
+| `STOPPED: no-hp-potion` | HP reached 0 and no usable Full HP Potion is available.                             |
+| `STOPPED: no-mana`      | A skill quest needs mana and the script cannot refill it.                           |
+| `STOPPED: auto-farm-on` | Manual combat is being blocked because the game's Auto Farm is enabled.             |
+
+In Manual mode, the current build also has recovery for a stray game-side Auto Farm session.
+
+**Clear hard stop**
+
+Use this after fixing the cause if you do not want to wait for the normal retry.
+
+**Full Reset**
+
+Use only when the automation is genuinely stuck. It clears runtime state, kill queues, and pending/deferred work.
+
+**Export a debug package first.**
+
+## Troubleshooting
+
+**Nothing attacks**
+
+Check that:
+
+* Autokills is on
+* the quest was added with **Add selected**
+* the monster exists on a configured wave
+* the script is not stopped
+* Manual mode is not being blocked by the game's Auto Farm
+* the worker tab is still available
+* you have enough stamina / usable potions
+
+**Skill quest is stuck**
+
+Check that you have a class selected at `/classes.php` and enough mana / Mana Potion S.
+
+**Collection quest is stuck**
+
+Check your inventory. The script does not gather missing quest items.
+
+
+**Multiple tabs look confusing**
+
+Remember: **one tab works, the others watch.** Reloading or navigating away from the worker can transfer the automation lease to another open tab.
+
+---
+
+## Debugging
+
+Use **Settings → General → Export debug package**.
+
+The exported `.txt` contains the runtime/configuration information needed to diagnose automation issues, including reports/events and Auto Farm state.
+
+When reporting a bug, include the export plus a short description of what should have happened, what actually happened, and the quest/monster involved.
 
 ---
 
 ## Good to know
 
-- This runs in your browser, not on a server — the tab holding the lock needs to not be closed (but if it gets closed, it will just transfer to any existing tab so no worries) for anything to keep happening.
-- Saved quests, settings, and reports are stored locally in your browser and scoped to your account — and different accounts on the same browser stay separate.
+* The worker tab must remain available for automation to continue.
+* Opening more tabs does not create more workers.
+* Quest/config/report state is stored locally in the browser and scoped to the account where applicable.
+* Avoid aggressively lowering timing values; it increases request frequency and can make rate limiting more likely.
